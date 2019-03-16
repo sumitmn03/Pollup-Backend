@@ -19,8 +19,6 @@ export class CommentForm extends Component {
         this.props.comment_index == undefined ? null : this.props.comment_index,
       post_index = this.props.post_index;
 
-    console.log(parent_comment);
-
     let { comment_content } = this.state;
 
     this.props.addComment(
@@ -50,7 +48,7 @@ export class CommentForm extends Component {
             name="comment_content"
           />
           <button type="submit" className="btn btn-dark">
-            post comment
+            >
           </button>{" "}
         </form>
       </Fragment>

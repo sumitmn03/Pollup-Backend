@@ -8,8 +8,7 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  posts: [],
-  props_updated: 0
+  posts: []
 };
 
 export default function posts(state = initialState, action) {
@@ -17,14 +16,12 @@ export default function posts(state = initialState, action) {
     case GET_POSTS:
       return {
         ...state,
-        posts: [...action.payload],
-        props_updated: state.props_updated + 1
+        posts: [...action.payload]
       };
     case ADD_POST:
       return {
         ...state,
-        posts: [...state.posts, action.payload],
-        props_updated: state.props_updated + 1
+        posts: [...state.posts, action.payload]
       };
     case DECREMENT_OPTION_COUNT:
       let {
@@ -68,8 +65,7 @@ export default function posts(state = initialState, action) {
           // updating finished... so keeping all other post datas ater the selected post as it is
 
           ...state.posts.slice(decrement_post_index + 1)
-        ],
-        props_updated: state.props_updated + 1
+        ]
       };
     case INCREMENT_OPTION_COUNT:
       let {
@@ -114,8 +110,7 @@ export default function posts(state = initialState, action) {
           // updating finished... so keeping all other post datas ater the selected post as it is
 
           ...state.posts.slice(increment_post_index + 1)
-        ],
-        props_updated: state.props_updated + 1
+        ]
       };
 
     case ADD_COMMENT:
@@ -146,8 +141,7 @@ export default function posts(state = initialState, action) {
           // updating finished... so keeping all other post datas ater the selected post as it is
 
           ...state.posts.slice(post_index + 1)
-        ],
-        props_updated: state.props_updated + 1
+        ]
       };
 
     case ADD_REPLY:
@@ -199,8 +193,7 @@ export default function posts(state = initialState, action) {
           // updating finished... so keeping all other post datas ater the selected post as it is
 
           ...state.posts.slice(post_index_for_reply + 1)
-        ],
-        props_updated: state.props_updated + 1
+        ]
       };
 
     default:

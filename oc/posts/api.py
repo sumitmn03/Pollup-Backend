@@ -16,6 +16,7 @@ from .serializers import (
     OptedBySerializer,
     TimelineSerializer,
     CommentSerializer,
+    UserSerializer
 )
 from .models import (post_table, option_table, comments_table, opted_by_table)
 from django.contrib.auth.models import User
@@ -95,3 +96,14 @@ class TimelineViewset(ModelViewSet):
 
     def get_queryset(self):
         return post_table.objects.all().order_by('-created_at')
+
+
+class GetUsersViewset(ModelViewSet):
+    serializer_class = UserSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return User.objects.all()

@@ -3,10 +3,10 @@ import React, { Component, Fragment } from "react";
 export class Option extends Component {
   render() {
     const { post_index, option_index, post_id } = this.props;
-    const { value, id, count } = this.props.option;
+    const { option, id, count } = this.props.option;
     return (
       <Fragment>
-        <span
+        <div
           href="#"
           className="btn btn-success"
           onClick={() =>
@@ -19,8 +19,10 @@ export class Option extends Component {
             )
           }
         >
-          {count}
-        </span>{" "}
+          {" "}
+          <span className="btn">{option}</span>
+          <span className="btn btn-primary">{count}</span>
+        </div>{" "}
       </Fragment>
     );
   }

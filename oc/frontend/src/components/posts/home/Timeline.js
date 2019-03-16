@@ -3,12 +3,6 @@ import React, { Component, Fragment } from "react";
 import Post from "./Post";
 
 export class Timeline extends Component {
-  state = {};
-
-  componentDidMount() {
-    this.props.getPosts();
-  }
-
   render() {
     const { posts } = this.props;
 

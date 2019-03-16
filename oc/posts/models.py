@@ -58,3 +58,15 @@ class comments_table(models.Model):
         if self.parent_comment:
             return False
         return True
+
+
+class follow_table(models.Model):
+    # the user being followed
+    following = models.ForeignKey(
+        User, related_name="follower", on_delete=models.CASCADE)
+    # the follower user
+    follower = models.ForeignKey(
+        User, related_name="following", on_delete=models.CASCADE, default=1)
+
+    def __str__(self):
+        return (str(self.following) if self.following else "null")

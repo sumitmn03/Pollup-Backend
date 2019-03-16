@@ -12,19 +12,22 @@ from django.contrib.auth import authenticate
 
 import json
 
-# from accounts.serializers import UserSerializer
-
 
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email')
 
+        read_only_fields = ('id', 'username', 'email')
+
 
 class CommentChildrenSerializer(ModelSerializer):
+    author_name = SerializerMethodField()
+
     class Meta:
         model = comments_table
         fields = [
+            'author_name',
             'id',
             'posts',
             'author',
@@ -32,6 +35,9 @@ class CommentChildrenSerializer(ModelSerializer):
             'comment',
             'timestamp',
         ]
+
+    def get_author_name(self, obj):
+        return str(obj.author.username)
 
 
 class CommentSerializer(ModelSerializer):

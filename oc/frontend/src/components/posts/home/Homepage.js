@@ -19,6 +19,11 @@ export class Homepage extends Component {
     decrementOption: PropTypes.func.isRequired,
     decrement_then_increment: PropTypes.func.isRequired
   };
+
+  componentDidMount() {
+    this.props.getPosts();
+  }
+
   render() {
     return (
       <Fragment>

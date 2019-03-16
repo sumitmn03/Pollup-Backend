@@ -13,6 +13,65 @@ export class Post extends Component {
     actions_are_ready: false
   };
 
+  componentDidMount() {
+    // console.log(this.props.post);
+    let is_any_option_opted = false,
+      last_option_opted = {},
+      last_option_opted_index = null,
+      count_of_previous_option_opted = 0,
+      actions_are_ready = true;
+
+    if (this.props.post.option_opted_by_current_user.length > 0) {
+      is_any_option_opted = true;
+      last_option_opted = this.props.post.option_opted_by_current_user[0];
+
+      this.props.post.options.map((option, index) => {
+        if (option.id == last_option_opted.posts_option) {
+          last_option_opted_index = index;
+          count_of_previous_option_opted = option.count;
+        }
+      });
+    }
+
+    this.setState({
+      is_any_option_opted,
+      last_option_opted,
+      last_option_opted_index,
+      count_of_previous_option_opted,
+      actions_are_ready
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.post != prevProps.post) {
+      let is_any_option_opted = false,
+        last_option_opted = {},
+        last_option_opted_index = null,
+        count_of_previous_option_opted = 0,
+        actions_are_ready = true;
+
+      if (this.props.post.option_opted_by_current_user.length > 0) {
+        is_any_option_opted = true;
+
+        last_option_opted = this.props.post.option_opted_by_current_user[0];
+        this.props.post.options.map((option, index) => {
+          if (option.id == last_option_opted.posts_option) {
+            last_option_opted_index = index;
+            count_of_previous_option_opted = option.count;
+          }
+        });
+      } else {
+      }
+      this.setState({
+        is_any_option_opted,
+        last_option_opted,
+        last_option_opted_index,
+        count_of_previous_option_opted,
+        actions_are_ready
+      });
+    }
+  }
+
   handle_option_opted = (
     option_id,
     post_id,
@@ -76,65 +135,7 @@ export class Post extends Component {
       }
     }
   };
-
-  componentDidMount() {
-    // console.log(this.props.post);
-    let is_any_option_opted = false,
-      last_option_opted = {},
-      last_option_opted_index = null,
-      count_of_previous_option_opted = 0,
-      actions_are_ready = true;
-
-    if (this.props.post.option_opted_by_current_user.length > 0) {
-      is_any_option_opted = true;
-      last_option_opted = this.props.post.option_opted_by_current_user[0];
-
-      this.props.post.options.map((option, index) => {
-        if (option.id == last_option_opted.posts_option) {
-          last_option_opted_index = index;
-          count_of_previous_option_opted = option.count;
-        }
-      });
-    }
-
-    this.setState({
-      is_any_option_opted,
-      last_option_opted,
-      last_option_opted_index,
-      count_of_previous_option_opted,
-      actions_are_ready
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.post != prevProps.post) {
-      let is_any_option_opted = false,
-        last_option_opted = {},
-        last_option_opted_index = null,
-        count_of_previous_option_opted = 0,
-        actions_are_ready = true;
-
-      if (this.props.post.option_opted_by_current_user.length > 0) {
-        is_any_option_opted = true;
-
-        last_option_opted = this.props.post.option_opted_by_current_user[0];
-        this.props.post.options.map((option, index) => {
-          if (option.id == last_option_opted.posts_option) {
-            last_option_opted_index = index;
-            count_of_previous_option_opted = option.count;
-          }
-        });
-      } else {
-      }
-      this.setState({
-        is_any_option_opted,
-        last_option_opted,
-        last_option_opted_index,
-        count_of_previous_option_opted,
-        actions_are_ready
-      });
-    }
-  }
+  hide_n_show_comment = () => {};
 
   render() {
     let { post, post_index, option_opted_by_current_user } = this.props;
@@ -159,9 +160,11 @@ export class Post extends Component {
           <br />
           <br />
           <div>
-            <Comment {...this.props} />
+            <span onClick={this.hide_n_show_comment} />
+            <div>
+              <Comment {...this.props} />
+            </div>
           </div>{" "}
-          <br />
           <br />
         </div>
       </Fragment>
