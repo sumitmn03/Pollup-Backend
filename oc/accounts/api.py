@@ -4,6 +4,21 @@ from knox.models import AuthToken
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from django.contrib.auth.models import User
 
+# get current user
+
+
+class GetCurrentUser(generics.RetrieveAPIView):
+    """
+    A view that returns a templated HTML representation of a given user.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response({'id': self.request.user.id,
+                         'username': self.request.user.username,
+                         'email': self.request.user.email})
+
 # Get User API
 
 

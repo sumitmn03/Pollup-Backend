@@ -19,7 +19,8 @@ export class FindPeoples extends Component {
     all_users: PropTypes.array.isRequired,
     following_user_array: PropTypes.array.isRequired,
     follow: PropTypes.func.isRequired,
-    unfollow: PropTypes.func.isRequired
+    unfollow: PropTypes.func.isRequired,
+    current_user: PropTypes.object.isRequired
   };
 
   componentDidMount() {
@@ -45,6 +46,7 @@ export class FindPeoples extends Component {
 }
 
 const mapStateToProps = state => ({
+  current_user: state.current_user.current_user,
   all_users: state.users.all_users,
   following_user_array: state.users.following
 });

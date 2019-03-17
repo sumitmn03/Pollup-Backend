@@ -4,8 +4,10 @@ import auth from "./auth";
 import errors from "./errors";
 import messages from "./messages";
 import users from "./users";
+import current_user from "./currentuser";
 
 export default combineReducers({
+  current_user,
   posts,
   auth,
   errors,

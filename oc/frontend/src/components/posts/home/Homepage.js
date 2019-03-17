@@ -10,6 +10,7 @@ import {
   addComment
 } from "../../../actions/posts";
 import { following } from "../../../actions/users";
+import { getCurrentUser } from "../../../actions/currentuser";
 
 import Timeline from "./Timeline";
 
@@ -20,12 +21,14 @@ export class Homepage extends Component {
     incrementOption: PropTypes.func.isRequired,
     decrementOption: PropTypes.func.isRequired,
     following: PropTypes.func.isRequired,
-    decrement_then_increment: PropTypes.func.isRequired
+    decrement_then_increment: PropTypes.func.isRequired,
+    getCurrentUser: PropTypes.func.isRequired
   };
 
   componentDidMount() {
     this.props.following();
     this.props.getPosts();
+    this.props.getCurrentUser();
   }
 
   render() {
@@ -138,6 +141,7 @@ export default connect(
     decrementOption,
     decrement_then_increment,
     addComment,
-    following
+    following,
+    getCurrentUser
   }
 )(Homepage);

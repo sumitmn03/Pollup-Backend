@@ -1,4 +1,10 @@
-import { GET_ALL_USERS, GET_SINGLE_USER, FOLLOWING } from "../actions/types";
+import {
+  GET_ALL_USERS,
+  GET_SINGLE_USER,
+  FOLLOWING,
+  FOLLOW,
+  UNFOLLOW
+} from "../actions/types";
 
 const initialState = {
   following: [],
@@ -24,6 +30,21 @@ export default function(state = initialState, action) {
       return {
         ...state,
         following: [...action.payload]
+      };
+
+    case FOLLOW:
+      return {
+        ...state,
+        following: [...state.following, action.payload]
+      };
+
+    case UNFOLLOW:
+      return {
+        ...state,
+        following: [
+          ...state.following.slice(0, action.payload.following_index),
+          ...state.following.slice(action.payload.following_index + 1)
+        ]
       };
 
     default:

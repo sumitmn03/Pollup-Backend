@@ -2,7 +2,13 @@ import axios from "axios";
 import { returnErrors } from "./messages";
 import { tokenConfig } from "./auth";
 
-import { GET_ALL_USERS, GET_SINGLE_USER, FOLLOW, FOLLOWING } from "./types";
+import {
+  GET_ALL_USERS,
+  GET_SINGLE_USER,
+  FOLLOWING,
+  FOLLOW,
+  UNFOLLOW
+} from "./types";
 
 // GET ALL USERS
 
@@ -74,16 +80,18 @@ export const follow = following_user_id => (dispatch, getState) => {
 
 // unfollow
 
-export const unfollow = following_id => (dispatch, getState) => {
-  console.log(following_id);
+export const unfollow = (following_id, following_index) => (
+  dispatch,
+  getState
+) => {
   axios
     .delete(`api/follow/${following_id}`, tokenConfig(getState))
-    .then(res => {
-      // dispatch({
-      //   type: FOLLOW,
-      //   payload: res.data
-      // });
-    })
+    .then(
+      dispatch({
+        type: UNFOLLOW,
+        payload: { following_index }
+      })
+    )
     .catch(err => {
       dispatch(returnErrors(err.response.data, err.response.status));
     });
