@@ -9,6 +9,8 @@ import {
   decrement_then_increment,
   addComment
 } from "../../../actions/posts";
+import { following } from "../../../actions/users";
+
 import Timeline from "./Timeline";
 
 export class Homepage extends Component {
@@ -17,10 +19,12 @@ export class Homepage extends Component {
     getPosts: PropTypes.func.isRequired,
     incrementOption: PropTypes.func.isRequired,
     decrementOption: PropTypes.func.isRequired,
+    following: PropTypes.func.isRequired,
     decrement_then_increment: PropTypes.func.isRequired
   };
 
   componentDidMount() {
+    this.props.following();
     this.props.getPosts();
   }
 
@@ -133,6 +137,7 @@ export default connect(
     incrementOption,
     decrementOption,
     decrement_then_increment,
-    addComment
+    addComment,
+    following
   }
 )(Homepage);

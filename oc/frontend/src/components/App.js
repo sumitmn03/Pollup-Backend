@@ -18,6 +18,7 @@ import Login from "./accounts/Login";
 import Register from "./accounts/Register";
 import Homepage from "./posts/home/Homepage";
 import FindPeoples from "./peoples/find/FindPeoples";
+import Profile from "./peoples/profile/Profile";
 
 import { Provider } from "react-redux";
 import store from "../store";
@@ -44,6 +45,7 @@ class App extends Component {
               <br /> <br />
               <div className="container">
                 <Switch>
+                  {/* only for authenticated users */}
                   <PrivateRoute exact path="/" component={Homepage} />
                   <PrivateRoute exact path="/post" component={Form} />
                   <PrivateRoute
@@ -51,6 +53,9 @@ class App extends Component {
                     path="/findpeoples"
                     component={FindPeoples}
                   />
+                  <PrivateRoute exact path="/profile" component={Profile} />
+
+                  {/* for non-authenticated user */}
                   <Route exact path="/register" component={Register} />
                   <Route exact path="/login" component={Login} />
                 </Switch>

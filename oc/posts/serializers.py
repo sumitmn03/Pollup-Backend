@@ -4,7 +4,8 @@ from rest_framework.serializers import (
     StringRelatedField
 )
 
-from .models import (post_table, option_table, opted_by_table, comments_table)
+from .models import (post_table, option_table,
+                     opted_by_table, comments_table, follow_table)
 
 from django.contrib.auth.models import User
 
@@ -65,6 +66,16 @@ class CommentSerializer(ModelSerializer):
         if obj.is_parent:
             return CommentChildrenSerializer(obj.children(), many=True).data
         return []
+
+
+class followSerializer(ModelSerializer):
+    class Meta:
+        model = follow_table
+        fields = [
+            'id',
+            'following',
+            'follower'
+        ]
 
 
 class OptedBySerializer(ModelSerializer):

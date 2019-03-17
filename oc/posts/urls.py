@@ -5,7 +5,9 @@ from .api import (
     TimelineViewset,
     CommentViewset,
     OptedByViewset,
-    GetUsersViewset
+    GetUsersViewset,
+    followViewset,
+    getFollowingUsersViewset
 )
 
 router = routers.DefaultRouter()
@@ -16,5 +18,8 @@ router.register('api/timeline', TimelineViewset, 'timeline')
 router.register('api/comments', CommentViewset, 'comment')
 router.register('api/optedby', OptedByViewset, 'optedby')
 router.register('api/getusers', GetUsersViewset, 'getusers')
+router.register('api/follow', followViewset, 'follow')
+router.register('api/following',
+                getFollowingUsersViewset, 'following')
 
 urlpatterns = router.urls

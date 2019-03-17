@@ -16,9 +16,11 @@ from .serializers import (
     OptedBySerializer,
     TimelineSerializer,
     CommentSerializer,
-    UserSerializer
+    UserSerializer,
+    followSerializer
 )
-from .models import (post_table, option_table, comments_table, opted_by_table)
+from .models import (post_table, option_table,
+                     comments_table, opted_by_table, follow_table)
 from django.contrib.auth.models import User
 
 
@@ -107,3 +109,28 @@ class GetUsersViewset(ModelViewSet):
 
     def get_queryset(self):
         return User.objects.all()
+
+
+class followViewset(ModelViewSet):
+    serializer_class = followSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return follow_table.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(follower=self.request.user)
+
+
+class getFollowingUsersViewset(ModelViewSet):
+    serializer_class = followSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return follow_table.objects.filter(follower=self.request.user)
