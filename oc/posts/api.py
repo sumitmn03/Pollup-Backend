@@ -97,7 +97,11 @@ class TimelineViewset(ModelViewSet):
     ]
 
     def get_queryset(self):
-        return post_table.objects.all().order_by('-created_at')
+        following = follow_table.objects.values_list('following').filter(
+            follower=self.request.user.id)
+        return post_table.objects.filter(author__in=following).order_by('-created_at')
+
+        # return post_table.objects.all().order_by('-created_at')
 
 
 class GetUsersViewset(ModelViewSet):
