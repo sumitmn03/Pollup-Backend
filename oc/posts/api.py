@@ -1,26 +1,27 @@
 from rest_framework import (
     permissions,
-    generics
+    generics,
+    viewsets
 )
 from rest_framework.response import Response
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSet
 
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from knox.models import AuthToken
 
 from .serializers import (
-    PostSerializer,
+    PollSerializer,
     OptionSerializer,
     OptedBySerializer,
     TimelineSerializer,
     CommentSerializer,
     UserSerializer,
-    followSerializer
-)
-from .models import (post_table, option_table,
-                     comments_table, opted_by_table, follow_table)
+    followSerializer,
+    SharedPostSerializer)
+from .models import (poll_table, option_table,
+                     comments_table, opted_by_table, follow_table, shared_post_table)
 from django.contrib.auth.models import User
 
 
@@ -50,7 +51,7 @@ class CommentViewset(ModelViewSet):
     ]
 
     def get_queryset(self):
-        return comments_table.objects.all().filter(parent_comment_id=None)
+        return comments_table.objects.filter(parent_comment_id=None)
 
 
 class OptionViewset(ModelViewSet):
@@ -71,37 +72,39 @@ class OptionViewset(ModelViewSet):
 
 
 class PostViewset(ModelViewSet):
-    serializer_class = PostSerializer
+    serializer_class = PollSerializer
 
-    # queryset = post_table.objects.all()
+    # queryset = poll_table.objects.all()
 
     permission_classes = [
         permissions.IsAuthenticated
     ]
 
     def get_queryset(self):
-        return post_table.objects.all()
+        return poll_table.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
 
-class TimelineViewset(ModelViewSet):
-    serializer_class = TimelineSerializer
+# class TimelineViewset(ModelViewSet):
+#     serializer_class = TimelineSerializer
 
-    def get_serializer_context(self):
-        return {"user": self.request.user}
+#     def get_serializer_context(self):
+#         return {"user": self.request.user}
 
-    permission_classes = [
-        permissions.IsAuthenticated
-    ]
+#     permission_classes = [
+#         permissions.IsAuthenticated
+#     ]
 
-    def get_queryset(self):
-        following = follow_table.objects.values_list('following').filter(
-            follower=self.request.user.id)
-        return post_table.objects.filter(author__in=following).order_by('-created_at')
+#     def get_queryset(self):
 
-        # return post_table.objects.all().order_by('-created_at')
+#         following = follow_table.objects.values_list('following').filter(
+#             follower=self.request.user.id)
+#         posts = poll_table.objects.filter(
+#             author__in=following).order_by('-created_at')
+
+#         return posts
 
 
 class GetUsersViewset(ModelViewSet):
@@ -138,3 +141,59 @@ class getFollowingUsersViewset(ModelViewSet):
 
     def get_queryset(self):
         return follow_table.objects.filter(follower=self.request.user)
+
+        # *********************** test ***********************
+        # *********************** test ***********************
+        # *********************** test ***********************
+        # *********************** test ***********************
+        # *********************** test ***********************
+        # *********************** test ***********************
+        # *********************** test ***********************
+        # *********************** test ***********************
+        # *********************** test ***********************
+
+
+class TimelineViewset(ViewSet):
+
+    def list(self, request):
+        # listing out the users whom the current user following
+        following = follow_table.objects.values_list('following').filter(
+            follower=self.request.user.id)
+
+        # listing out all the post of the following user
+        posts = poll_table.objects.filter(
+            author__in=following).order_by('-created_at')
+
+        serializer = TimelineSerializer(
+            posts, many=True, context={'user': self.request.user})
+
+        # listing out all the shared post
+        shared_posts = shared_post_table.objects.filter(
+            shared_by__in=following).order_by('-timestamp')
+
+        serializer1 = SharedPostSerializer(shared_posts, many=True, context={
+                                           'user': self.request.user})
+        # print("hello")
+        # print(serializer1.data)
+        # print(serializer.data)
+        final_data = [] + serializer.data + serializer1.data
+
+        # return Response(serializer.data)
+        return Response(final_data)
+
+
+class SharedPollViewset(ModelViewSet):
+    serializer_class = SharedPostSerializer
+
+    def get_serializer_context(self):
+        return {"user": self.request.user}
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        following = follow_table.objects.values_list('following').filter(
+            follower=self.request.user.id)
+
+        return shared_post_table.objects.filter(shared_by__in=following)

@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from "react";
 
-import PostContent from "./PostContent";
 import Option from "./Option";
 import Comment from "./comment/Comment";
+import PostHeader from "./PostHeader";
+import ShareButton from "./sharebutton/ShareButton";
 
 export class Post extends Component {
   state = {
@@ -135,14 +136,17 @@ export class Post extends Component {
       }
     }
   };
-  hide_n_show_comment = () => {};
 
   render() {
     let { post, post_index, option_opted_by_current_user } = this.props;
     return (
       <Fragment>
-        <div className=" bg-info">
-          <PostContent post={post} />
+        <div className="bg-info">
+          <PostHeader
+            author_name={post.author_name}
+            timestamp={post.created_at}
+          />
+          <p className="text-light">{post.posts}</p>
           {post.options.map((option, option_index) => {
             return (
               <Option
@@ -160,10 +164,8 @@ export class Post extends Component {
           <br />
           <br />
           <div>
-            <span onClick={this.hide_n_show_comment} />
-            <div>
-              <Comment {...this.props} />
-            </div>
+            <Comment {...this.props} />
+            <ShareButton {...this.props} />
           </div>{" "}
           <br />
         </div>

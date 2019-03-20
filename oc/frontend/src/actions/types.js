@@ -21,3 +21,5 @@ export const FOLLOWING = "FOLLOWING";
 export const FOLLOW = "FOLLOW";
 export const UNFOLLOW = "UNFOLLOW";
 export const GET_CURRENT_USER = "GET_CURRENT_USER";
+export const AddSharePoll = "AddSharePoll";
+export const CURRENTPOST = "CURRENTPOST";

@@ -195,6 +195,7 @@ export const addOptions = (posts, options) => (dispatch, getState) => {
 // ADD COMMENT
 
 export const addComment = (
+  post_type,
   posts,
   author,
   parent_comment,
@@ -203,6 +204,7 @@ export const addComment = (
   post_index
 ) => (dispatch, getState) => {
   const comment = {
+    post_type,
     posts,
     author,
     parent_comment,

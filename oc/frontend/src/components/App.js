@@ -19,6 +19,7 @@ import Register from "./accounts/Register";
 import Homepage from "./posts/home/Homepage";
 import FindPeoples from "./peoples/find/FindPeoples";
 import Profile from "./peoples/profile/Profile";
+import ConfirmShareOnTimeline from "./posts/home/sharebutton/ConfirmShareOnTimeline";
 
 import { Provider } from "react-redux";
 import store from "../store";
@@ -54,7 +55,11 @@ class App extends Component {
                     component={FindPeoples}
                   />
                   <PrivateRoute exact path="/profile" component={Profile} />
-
+                  <PrivateRoute
+                    exact
+                    path="/confirmshareontimeline"
+                    component={ConfirmShareOnTimeline}
+                  />
                   {/* for non-authenticated user */}
                   <Route exact path="/register" component={Register} />
                   <Route exact path="/login" component={Login} />

@@ -1,3 +1,4 @@
+from django.urls import path
 from rest_framework import routers
 from .api import (
     PostViewset,
@@ -7,7 +8,8 @@ from .api import (
     OptedByViewset,
     GetUsersViewset,
     followViewset,
-    getFollowingUsersViewset
+    getFollowingUsersViewset,
+    SharedPollViewset
 )
 
 router = routers.DefaultRouter()
@@ -21,5 +23,6 @@ router.register('api/getusers', GetUsersViewset, 'getusers')
 router.register('api/follow', followViewset, 'follow')
 router.register('api/following',
                 getFollowingUsersViewset, 'following')
+router.register('api/sharedpoll', SharedPollViewset, 'sharedpoll')
 
 urlpatterns = router.urls

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-class post_table(models.Model):
+class poll_table(models.Model):
     posts = models.CharField(max_length=500, blank=True, null=True)
     author = models.ForeignKey(
         User, related_name="posts", on_delete=models.CASCADE, default=1)
@@ -17,7 +17,7 @@ class post_table(models.Model):
 
 class option_table(models.Model):
     posts = models.ForeignKey(
-        post_table, related_name="options", on_delete=models.CASCADE)
+        poll_table, related_name="options", on_delete=models.CASCADE)
     option = models.CharField(max_length=50, blank=True, null=True)
     count = models.IntegerField(default=0)
 
@@ -27,7 +27,7 @@ class option_table(models.Model):
 
 class opted_by_table(models.Model):
     posts = models.ForeignKey(
-        post_table, related_name="opted_by", on_delete=models.CASCADE, default=1)
+        poll_table, related_name="opted_by", on_delete=models.CASCADE, default=1)
     posts_option = models.ForeignKey(
         option_table, related_name="opted_by", on_delete=models.CASCADE)
     user = models.ForeignKey(
@@ -38,8 +38,11 @@ class opted_by_table(models.Model):
 
 
 class comments_table(models.Model):
-    posts = models.ForeignKey(
-        post_table, related_name="comments", on_delete=models.CASCADE)
+    post_type = models.IntegerField(default=1)
+    posts = models.IntegerField()
+
+    # posts = models.ForeignKey(
+    #     poll_table, related_name="comments", on_delete=models.CASCADE)
     author = models.ForeignKey(
         User, related_name="comments", on_delete=models.CASCADE)
     parent_comment = models.ForeignKey(
@@ -70,3 +73,17 @@ class follow_table(models.Model):
 
     def __str__(self):
         return (str(self.following) if self.following else "null")
+
+
+class shared_post_table(models.Model):
+    # the user shared the post
+    shared_by = models.ForeignKey(
+        User, related_name="shared_post", on_delete=models.CASCADE)
+    caption = models.CharField(max_length=500, blank=True, null=True)
+    # the post being shared
+    shared_post = models.ForeignKey(
+        poll_table, related_name="shared_by", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return (str(self.shared_post) if self.shared_post else "null")

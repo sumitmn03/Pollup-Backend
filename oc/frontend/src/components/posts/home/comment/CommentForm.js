@@ -11,8 +11,9 @@ export class CommentForm extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    let post = this.props.post.id,
-      author = this.props.post.current_user.id,
+    let post_type = this.props.post.post_type,
+      post = this.props.post.id,
+      author = this.props.current_user.id,
       parent_comment =
         this.props.comment == undefined ? null : this.props.comment.id,
       parent_comment_index =
@@ -22,6 +23,7 @@ export class CommentForm extends Component {
     let { comment_content } = this.state;
 
     this.props.addComment(
+      post_type,
       post,
       author,
       parent_comment,
@@ -32,10 +34,6 @@ export class CommentForm extends Component {
 
     this.setState({ comment_content: "" });
   };
-
-  componentDidMount() {
-    // console.log(this.props.comment == undefined);
-  }
 
   render() {
     return (

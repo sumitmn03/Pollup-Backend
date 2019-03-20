@@ -11,18 +11,21 @@ import {
 } from "../../../actions/posts";
 import { following } from "../../../actions/users";
 import { getCurrentUser } from "../../../actions/currentuser";
+import { share_poll } from "../../../actions/SharePoll";
 
 import Timeline from "./Timeline";
 
 export class Homepage extends Component {
   static propTypes = {
+    current_user: PropTypes.object.isRequired,
     posts: PropTypes.array.isRequired,
     getPosts: PropTypes.func.isRequired,
     incrementOption: PropTypes.func.isRequired,
     decrementOption: PropTypes.func.isRequired,
     following: PropTypes.func.isRequired,
     decrement_then_increment: PropTypes.func.isRequired,
-    getCurrentUser: PropTypes.func.isRequired
+    getCurrentUser: PropTypes.func.isRequired,
+    share_poll: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -130,6 +133,7 @@ export class Homepage extends Component {
 }
 
 const mapStateToProps = state => ({
+  current_user: state.current_user.current_user,
   posts: state.posts.posts
 });
 
@@ -142,6 +146,7 @@ export default connect(
     decrement_then_increment,
     addComment,
     following,
-    getCurrentUser
+    getCurrentUser,
+    share_poll
   }
 )(Homepage);

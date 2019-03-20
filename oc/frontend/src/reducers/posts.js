@@ -4,7 +4,8 @@ import {
   INCREMENT_OPTION_COUNT,
   DECREMENT_OPTION_COUNT,
   ADD_COMMENT,
-  ADD_REPLY
+  ADD_REPLY,
+  AddSharePoll
 } from "../actions/types";
 
 const initialState = {
@@ -19,6 +20,11 @@ export default function posts(state = initialState, action) {
         posts: [...action.payload]
       };
     case ADD_POST:
+      return {
+        ...state,
+        posts: [...state.posts, action.payload]
+      };
+    case AddSharePoll:
       return {
         ...state,
         posts: [...state.posts, action.payload]

@@ -8,7 +8,8 @@ export class Comment extends Component {
   };
 
   componentDidMount() {
-    let value_of_id = "comment" + this.props.post.id;
+    let value_of_id =
+      "comment" + this.props.post.id + this.props.post.post_type;
     this.setState({ value_of_id });
   }
 
