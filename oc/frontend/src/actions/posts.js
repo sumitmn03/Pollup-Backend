@@ -4,8 +4,6 @@ import { tokenConfig } from "./auth";
 
 import {
   GET_POSTS,
-  ADD_POST,
-  ADD_OPTION,
   INCREMENT_OPTION_COUNT,
   DECREMENT_OPTION_COUNT,
   ADD_COMMENT,
@@ -158,14 +156,7 @@ export const addPost = data_from_form => (dispatch, getState) => {
     .then(res => {
       dispatch(createMessage({ addPost: "Post Added" }));
       dispatch(addOptions(res.data.id, options));
-      axios
-        .get(`/api/timeline/${res.data.id}`, tokenConfig(getState))
-        .then(res1 => {
-          dispatch({
-            type: ADD_POST,
-            payload: res1.data
-          });
-        });
+      dispatch(getPosts());
     })
     .catch(err => {
       dispatch(returnErrors(err.response.data, err.response.status));
@@ -181,10 +172,6 @@ export const addOptions = (posts, options) => (dispatch, getState) => {
       .post("api/options/", final_option_data, tokenConfig(getState))
       .then(res => {
         dispatch(createMessage({ addOptions: "Option Added" }));
-        // dispatch({
-        //   type: ADD_OPTION,
-        //   payload: res.data
-        // });
       })
       .catch(err => {
         dispatch(returnErrors(err.response.data, err.response.status));
@@ -233,4 +220,72 @@ export const addComment = (
     .catch(err => {
       dispatch(returnErrors(err.response.data, err.response.status));
     });
+};
+
+// DELETE POST
+
+export const deletePost = (post_type, post_id) => (dispatch, getState) => {
+  if (post_type == 1) {
+    axios
+      .delete(`api/posts/${post_id}/`, tokenConfig(getState))
+      .then(res => {
+        dispatch(getPosts());
+      })
+      .catch(err => {
+        dispatch(returnErrors(err.response.data, err.response.status));
+      });
+  } else {
+    axios
+      .delete(`api/sharedpoll/${post_id}/`, tokenConfig(getState))
+      .then(res => {
+        dispatch(getPosts());
+      })
+      .catch(err => {
+        dispatch(returnErrors(err.response.data, err.response.status));
+      });
+  }
+};
+
+// UPDATE POST
+
+export const updatePost = (post_type, post_id, udpated_data, options) => (
+  dispatch,
+  getState
+) => {
+  if (post_type == 1) {
+    let final_data = { posts: udpated_data };
+    axios
+      .patch(
+        `api/posts/${post_id}/`,
+        JSON.stringify(final_data),
+        tokenConfig(getState)
+      )
+      .then(res => {
+        options.map(option => {
+          axios.patch(
+            `api/options/${option.id}/`,
+            JSON.stringify(option),
+            tokenConfig(getState)
+          );
+        });
+        dispatch(getPosts());
+      })
+      .catch(err => {
+        dispatch(returnErrors(err.response.data, err.response.status));
+      });
+  } else if (post_type == 2) {
+    let final_data = { caption: udpated_data };
+    axios
+      .patch(
+        `api/sharedpoll/${post_id}/`,
+        JSON.stringify(final_data),
+        tokenConfig(getState)
+      )
+      .then(res => {
+        dispatch(getPosts());
+      })
+      .catch(err => {
+        dispatch(returnErrors(err.response.data, err.response.status));
+      });
+  }
 };

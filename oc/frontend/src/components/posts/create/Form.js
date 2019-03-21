@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -13,7 +14,8 @@ export class Form extends Component {
     post: "",
     no_of_options: 0,
     optionArray: [],
-    options: []
+    options: [],
+    isSubmitted: false
   };
 
   static propTypes = {
@@ -66,11 +68,15 @@ export class Form extends Component {
       post: "",
       no_of_options: 0,
       optionArray: [],
-      options: []
+      options: [],
+      isSubmitted: true
     });
   };
 
   render() {
+    if (this.state.isSubmitted) {
+      return <Redirect to="/" />;
+    }
     const { post, optionArray } = this.state;
     return (
       <div>

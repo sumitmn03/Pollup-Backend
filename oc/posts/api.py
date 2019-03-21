@@ -87,7 +87,7 @@ class PostViewset(ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-# class TimelineViewset(ModelViewSet):
+# class TimelinePost(ModelViewSet):
 #     serializer_class = TimelineSerializer
 
 #     def get_serializer_context(self):

@@ -119,6 +119,7 @@ class PollSerializer(ModelSerializer):
 
 class TimelineSerializer(ModelSerializer):
     author_name = SerializerMethodField()
+    author_id = SerializerMethodField()
     options = OptionSerializer(many=True)
     # current_user = SerializerMethodField()
     option_opted_by_current_user = SerializerMethodField()
@@ -133,6 +134,7 @@ class TimelineSerializer(ModelSerializer):
             'id',
             'posts',
             'author_name',
+            'author_id',
             'created_at',
             'options',
             'option_opted_by_current_user',
@@ -151,6 +153,9 @@ class TimelineSerializer(ModelSerializer):
 
     def get_author_name(self, obj):
         return str(obj.author.username)
+
+    def get_author_id(self, obj):
+        return str(obj.author.id)
 
     def get_option_opted_by_current_user(self, obj):
         current_user = self.context["user"]
@@ -171,6 +176,7 @@ class TimelineSerializer(ModelSerializer):
 class SharedPostSerializer(ModelSerializer):
     original_post = SerializerMethodField()
     author_name = SerializerMethodField()
+    author_id = SerializerMethodField()
     post_type = SerializerMethodField()
     comments = SerializerMethodField()
 
@@ -181,6 +187,7 @@ class SharedPostSerializer(ModelSerializer):
             'id',
             'shared_by',
             'author_name',
+            'author_id',
             'shared_post',
             'caption',
             'timestamp',
@@ -205,6 +212,9 @@ class SharedPostSerializer(ModelSerializer):
 
     def get_author_name(self, obj):
         return str(obj.shared_by.username)
+
+    def get_author_id(self, obj):
+        return str(obj.shared_by.id)
 
     def get_comments(self, obj):
         comment = comments_table.objects.filter(

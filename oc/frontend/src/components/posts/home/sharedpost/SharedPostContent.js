@@ -5,19 +5,18 @@ import Comment from "../comment/Comment";
 
 export class SharedPostContent extends Component {
   render() {
-    const { shared_poll_data } = this.props;
+    const { shared_poll_data, current_user, post } = this.props;
     return (
       <div className="bg-info">
-        <PostHeader
-          author_name={shared_poll_data.author_name}
-          timestamp={shared_poll_data.timestamp}
-        />
+        <PostHeader {...this.props} />
         <span>{shared_poll_data.caption}</span>
         <div className="border">
-          <PostHeader
-            author_name={shared_poll_data.original_post.author_name}
-            timestamp={shared_poll_data.original_post.created_at}
-          />
+          <span>
+            <h2>{shared_poll_data.original_post.author_name}</h2>
+          </span>{" "}
+          <span>
+            <small>-{shared_poll_data.original_post.created_at}</small>
+          </span>
           <p className="text-light">{shared_poll_data.original_post.posts}</p>
           <br />
           <br />

@@ -20,6 +20,8 @@ import Homepage from "./posts/home/Homepage";
 import FindPeoples from "./peoples/find/FindPeoples";
 import Profile from "./peoples/profile/Profile";
 import ConfirmShareOnTimeline from "./posts/home/sharebutton/ConfirmShareOnTimeline";
+import UpdateForm from "./update/update_poll/UpdateForm";
+import UpdatesharedPollForm from "./update/update_shared_poll/UpdatesharedPollForm";
 
 import { Provider } from "react-redux";
 import store from "../store";
@@ -60,6 +62,17 @@ class App extends Component {
                     path="/confirmshareontimeline"
                     component={ConfirmShareOnTimeline}
                   />
+                  <PrivateRoute
+                    exact
+                    path="/updatepost"
+                    component={UpdateForm}
+                  />
+                  <PrivateRoute
+                    exact
+                    path="/updatesharedpollform"
+                    component={UpdatesharedPollForm}
+                  />
+
                   {/* for non-authenticated user */}
                   <Route exact path="/register" component={Register} />
                   <Route exact path="/login" component={Login} />

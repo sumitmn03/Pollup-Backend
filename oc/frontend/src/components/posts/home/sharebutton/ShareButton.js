@@ -1,12 +1,10 @@
 import React, { Component, Fragment } from "react";
-import ConfirmShareOnTimeline from "./ConfirmShareOnTimeline";
+import { Link } from "react-router-dom";
 
 export class ShareButton extends Component {
-  state = {
-    postToTimelineCaption: false
-  };
-  redirectToConfirmationPage = () => {
-    this.setState({ postToTimelineCaption: true });
+  setSharedPollData = () => {
+    this.props.share_poll_info(this.props.post);
+    return true;
   };
   render() {
     return (
@@ -21,17 +19,17 @@ export class ShareButton extends Component {
             {" "}
             <strong>Share</strong>
           </span>
-          <button
-            onClick={this.redirectToConfirmationPage}
+          <div
             className="dropdown-menu nounderline"
+            aria-labelledby="dropdownMenuButton"
+            onClick={this.setSharedPollData}
           >
-            On your timeline
-          </button>
-          {this.state.postToTimelineCaption ? (
-            <ConfirmShareOnTimeline {...this.props} />
-          ) : (
-            <Fragment />
-          )}
+            <span className="dropdown-item" href="#">
+              <Link to="/confirmshareontimeline" className="nounderline">
+                On your timeline
+              </Link>
+            </span>
+          </div>
         </div>
       </Fragment>
     );

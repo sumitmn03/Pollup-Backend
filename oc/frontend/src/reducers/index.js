@@ -5,6 +5,8 @@ import errors from "./errors";
 import messages from "./messages";
 import users from "./users";
 import current_user from "./currentuser";
+import sharedpollinfo from "./sharedpollinfo";
+import PostToBeUpdated from "./PostToBeUpdated";
 
 export default combineReducers({
   current_user,
@@ -12,5 +14,7 @@ export default combineReducers({
   auth,
   errors,
   messages,
-  users
+  users,
+  sharedpollinfo,
+  PostToBeUpdated
 });

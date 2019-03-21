@@ -1,5 +1,5 @@
-export const ADD_OPTION = "ADD_OPTION";
-export const ADD_POST = "ADD_POST";
+// export const ADD_OPTION = "ADD_OPTION";
+// export const ADD_POST = "ADD_POST";
 export const AUTH_ERROR = "AUTH_ERROR";
 export const CREATE_MESSAGE = "CREATE_MESSAGE";
 export const GET_ERRORS = "GET_ERRORS";
@@ -21,5 +21,6 @@ export const FOLLOWING = "FOLLOWING";
 export const FOLLOW = "FOLLOW";
 export const UNFOLLOW = "UNFOLLOW";
 export const GET_CURRENT_USER = "GET_CURRENT_USER";
+export const SHAREDPOLL = "SHAREDPOLL";
 export const AddSharePoll = "AddSharePoll";
-export const CURRENTPOST = "CURRENTPOST";
+export const POSTTOBEUPDATED = "POSTTOBEUPDATED";

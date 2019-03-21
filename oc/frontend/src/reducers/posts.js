@@ -1,6 +1,5 @@
 import {
   GET_POSTS,
-  ADD_POST,
   INCREMENT_OPTION_COUNT,
   DECREMENT_OPTION_COUNT,
   ADD_COMMENT,
@@ -19,11 +18,11 @@ export default function posts(state = initialState, action) {
         ...state,
         posts: [...action.payload]
       };
-    case ADD_POST:
-      return {
-        ...state,
-        posts: [...state.posts, action.payload]
-      };
+    // case ADD_POST:
+    //   return {
+    //     ...state,
+    //     posts: [...state.posts, action.payload]
+    //   };
     case AddSharePoll:
       return {
         ...state,

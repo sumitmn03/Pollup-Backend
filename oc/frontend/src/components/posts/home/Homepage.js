@@ -7,11 +7,13 @@ import {
   incrementOption,
   decrementOption,
   decrement_then_increment,
-  addComment
+  addComment,
+  deletePost
 } from "../../../actions/posts";
 import { following } from "../../../actions/users";
 import { getCurrentUser } from "../../../actions/currentuser";
-import { share_poll } from "../../../actions/SharePoll";
+import { share_poll_info } from "../../../actions/sharedpollinfo";
+import { set_post_to_be_update } from "../../../actions/PostToBeUpdated";
 
 import Timeline from "./Timeline";
 
@@ -25,7 +27,9 @@ export class Homepage extends Component {
     following: PropTypes.func.isRequired,
     decrement_then_increment: PropTypes.func.isRequired,
     getCurrentUser: PropTypes.func.isRequired,
-    share_poll: PropTypes.func.isRequired
+    share_poll_info: PropTypes.func.isRequired,
+    deletePost: PropTypes.func.isRequired,
+    set_post_to_be_update: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -147,6 +151,8 @@ export default connect(
     addComment,
     following,
     getCurrentUser,
-    share_poll
+    share_poll_info,
+    deletePost,
+    set_post_to_be_update
   }
 )(Homepage);

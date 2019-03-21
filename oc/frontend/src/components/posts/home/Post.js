@@ -15,7 +15,7 @@ export class Post extends Component {
   };
 
   componentDidMount() {
-    // console.log(this.props.post);
+    // console.log(this.props);
     let is_any_option_opted = false,
       last_option_opted = {},
       last_option_opted_index = null,
@@ -138,14 +138,16 @@ export class Post extends Component {
   };
 
   render() {
-    let { post, post_index, option_opted_by_current_user } = this.props;
+    let {
+      post,
+      post_index,
+      option_opted_by_current_user,
+      current_user
+    } = this.props;
     return (
       <Fragment>
         <div className="bg-info">
-          <PostHeader
-            author_name={post.author_name}
-            timestamp={post.created_at}
-          />
+          <PostHeader {...this.props} />
           <p className="text-light">{post.posts}</p>
           {post.options.map((option, option_index) => {
             return (
