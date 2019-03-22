@@ -4,7 +4,8 @@ import {
   DECREMENT_OPTION_COUNT,
   ADD_COMMENT,
   ADD_REPLY,
-  AddSharePoll
+  AddSharePoll,
+  POSTREPORTED
 } from "../actions/types";
 
 const initialState = {
@@ -198,6 +199,16 @@ export default function posts(state = initialState, action) {
           // updating finished... so keeping all other post datas ater the selected post as it is
 
           ...state.posts.slice(post_index_for_reply + 1)
+        ]
+      };
+
+    case POSTREPORTED:
+      const { post_index_for_handling_report } = action.payload;
+      return {
+        ...state,
+        posts: [
+          ...state.posts.slice(0, post_index_for_handling_report),
+          ...state.posts.slice(post_index_for_handling_report + 1)
         ]
       };
 

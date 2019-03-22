@@ -4,6 +4,7 @@ import Option from "./Option";
 import Comment from "./comment/Comment";
 import PostHeader from "./PostHeader";
 import ShareButton from "./sharebutton/ShareButton";
+import ReportButton from "../home/reportbutton/ReportButton";
 
 export class Post extends Component {
   state = {
@@ -168,6 +169,7 @@ export class Post extends Component {
           <div>
             <Comment {...this.props} />
             <ShareButton {...this.props} />
+            <ReportButton {...this.props} />
           </div>{" "}
           <br />
         </div>

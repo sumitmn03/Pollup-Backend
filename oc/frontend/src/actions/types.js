@@ -24,3 +24,4 @@ export const GET_CURRENT_USER = "GET_CURRENT_USER";
 export const SHAREDPOLL = "SHAREDPOLL";
 export const AddSharePoll = "AddSharePoll";
 export const POSTTOBEUPDATED = "POSTTOBEUPDATED";
+export const POSTREPORTED = "POSTREPORTED";

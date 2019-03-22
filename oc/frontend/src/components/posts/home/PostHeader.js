@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export class PostHeader extends Component {
   deleteHandler = () => {
-    this.props.deletePoll(this.props.post.post_type, this.props.post.id);
+    this.props.deletePost(this.props.post.post_type, this.props.post.id);
   };
 
   updateHandler = () => {

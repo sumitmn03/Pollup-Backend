@@ -6,7 +6,7 @@ from rest_framework.serializers import (
 )
 
 from .models import (poll_table, option_table,
-                     opted_by_table, comments_table, follow_table, shared_post_table)
+                     opted_by_table, comments_table, follow_table, shared_post_table, report_table)
 
 from django.contrib.auth.models import User
 
@@ -221,3 +221,26 @@ class SharedPostSerializer(ModelSerializer):
             posts=obj.id, post_type=2, parent_comment_id=None)
         serializer = CommentSerializer(instance=comment, many=True)
         return serializer.data
+
+
+class sharedPollSerializerForHandlingReport(ModelSerializer):
+    class Meta:
+        model = shared_post_table
+        fields = [
+            'shared_by',
+            'caption',
+            'shared_post',
+            'timestamp']
+
+
+class reportSerializer(ModelSerializer):
+    class Meta:
+        model = report_table
+        fields = [
+            'id',
+            'post_type',
+            'post_id',
+            'report',
+            'solved',
+            'reported_user'
+        ]

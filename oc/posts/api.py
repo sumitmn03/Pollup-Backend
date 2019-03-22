@@ -19,9 +19,18 @@ from .serializers import (
     CommentSerializer,
     UserSerializer,
     followSerializer,
-    SharedPostSerializer)
-from .models import (poll_table, option_table,
-                     comments_table, opted_by_table, follow_table, shared_post_table)
+    SharedPostSerializer,
+    reportSerializer,
+    sharedPollSerializerForHandlingReport)
+
+from .models import (poll_table,
+                     option_table,
+                     comments_table,
+                     opted_by_table,
+                     follow_table,
+                     shared_post_table,
+                     report_table)
+
 from django.contrib.auth.models import User
 
 
@@ -160,23 +169,33 @@ class TimelineViewset(ViewSet):
         following = follow_table.objects.values_list('following').filter(
             follower=self.request.user.id)
 
+        # listing out the polls that are reported by the user
+
+        reported_polls = report_table.objects.values_list(
+            'post_id').filter(post_type=1)
+
+        # listing out the polls that are reported by the user
+
+        reported_shared_polls = report_table.objects.values_list(
+            'post_id').filter(post_type=2)
+
         # listing out all the post of the following user
         posts = poll_table.objects.filter(
-            author__in=following).order_by('-created_at')
+            author__in=following).exclude(id__in=reported_polls).order_by('-created_at')
 
-        serializer = TimelineSerializer(
+        serializer1 = TimelineSerializer(
             posts, many=True, context={'user': self.request.user})
 
         # listing out all the shared post
         shared_posts = shared_post_table.objects.filter(
-            shared_by__in=following).order_by('-timestamp')
+            shared_by__in=following).exclude(id__in=reported_shared_polls).order_by('-timestamp')
 
-        serializer1 = SharedPostSerializer(shared_posts, many=True, context={
+        serializer2 = SharedPostSerializer(shared_posts, many=True, context={
                                            'user': self.request.user})
         # print("hello")
         # print(serializer1.data)
         # print(serializer.data)
-        final_data = [] + serializer.data + serializer1.data
+        final_data = [] + serializer1.data + serializer2.data
 
         # return Response(serializer.data)
         return Response(final_data)
@@ -197,3 +216,27 @@ class SharedPollViewset(ModelViewSet):
             follower=self.request.user.id)
 
         return shared_post_table.objects.filter(shared_by__in=following)
+
+
+class reportViewset(ModelViewSet):
+    serializer_class = reportSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return report_table.objects.filter(reported_user=self.request.user.id)
+
+
+class SharedPollForReportViewset(ModelViewSet):
+    serializer_class = sharedPollSerializerForHandlingReport
+
+    # queryset = poll_table.objects.all()
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return shared_post_table.objects.all()

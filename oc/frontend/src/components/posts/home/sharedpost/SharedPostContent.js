@@ -3,6 +3,8 @@ import React, { Component, Fragment } from "react";
 import PostHeader from "../PostHeader";
 import Comment from "../comment/Comment";
 
+import ReportButton from "../reportbutton/ReportButton";
+
 export class SharedPostContent extends Component {
   render() {
     const { shared_poll_data, current_user, post } = this.props;
@@ -23,6 +25,7 @@ export class SharedPostContent extends Component {
         </div>
         <div>
           <Comment {...this.props} />
+          <ReportButton {...this.props} />
         </div>{" "}
         <br />
       </div>

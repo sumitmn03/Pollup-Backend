@@ -14,6 +14,7 @@ import { following } from "../../../actions/users";
 import { getCurrentUser } from "../../../actions/currentuser";
 import { share_poll_info } from "../../../actions/sharedpollinfo";
 import { set_post_to_be_update } from "../../../actions/PostToBeUpdated";
+import { report } from "../../../actions/report";
 
 import Timeline from "./Timeline";
 
@@ -29,7 +30,8 @@ export class Homepage extends Component {
     getCurrentUser: PropTypes.func.isRequired,
     share_poll_info: PropTypes.func.isRequired,
     deletePost: PropTypes.func.isRequired,
-    set_post_to_be_update: PropTypes.func.isRequired
+    set_post_to_be_update: PropTypes.func.isRequired,
+    report: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -153,6 +155,7 @@ export default connect(
     getCurrentUser,
     share_poll_info,
     deletePost,
-    set_post_to_be_update
+    set_post_to_be_update,
+    report
   }
 )(Homepage);

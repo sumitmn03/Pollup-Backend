@@ -87,3 +87,15 @@ class shared_post_table(models.Model):
 
     def __str__(self):
         return (str(self.shared_post) if self.shared_post else "null")
+
+
+class report_table(models.Model):
+    post_type = models.IntegerField(default=0)
+    post_id = models.IntegerField(default=0)
+    report = models.IntegerField(default=0)
+    solved = models.BooleanField(default=False)
+    reported_user = models.ForeignKey(
+        User, related_name="reported_post", on_delete=models.CASCADE, default=1)
+
+    def __str__(self):
+        return (str(self.report) if self.report else "null")
