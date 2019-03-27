@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+
 import { logout } from "../../actions/auth";
+import { get_notifications } from "../../actions/notification";
+
+import NotificationButton from "../notification/NotificationButton";
 
 export class Header extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-    logout: PropTypes.func.isRequired
+    logout: PropTypes.func.isRequired,
+    get_notifications: PropTypes.func.isRequired
   };
   render() {
     const { isAuthenticated, user } = this.props.auth;
@@ -19,6 +24,7 @@ export class Header extends Component {
             Home
           </Link>
         </li>
+        <NotificationButton get_notifications={this.props.get_notifications} />
         <li className="nav-item">
           <Link to="/findpeoples" className="nav-link">
             Peoples
@@ -87,5 +93,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { logout }
+  { logout, get_notifications }
 )(Header);

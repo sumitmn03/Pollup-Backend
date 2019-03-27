@@ -99,3 +99,16 @@ class report_table(models.Model):
 
     def __str__(self):
         return (str(self.report) if self.report else "null")
+
+
+class notification_table(models.Model):
+    notification_for = models.IntegerField(default=0)
+    user = models.ForeignKey(
+        User, related_name="notifications", on_delete=models.CASCADE)
+    type_id = models.IntegerField(default=0)
+    count = models.IntegerField(default=0)
+    notification = models.CharField(max_length=500, blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return (str(self.notification) if self.notification else "null")

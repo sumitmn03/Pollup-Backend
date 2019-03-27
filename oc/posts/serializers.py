@@ -6,7 +6,7 @@ from rest_framework.serializers import (
 )
 
 from .models import (poll_table, option_table,
-                     opted_by_table, comments_table, follow_table, shared_post_table, report_table)
+                     opted_by_table, comments_table, follow_table, shared_post_table, report_table, notification_table)
 
 from django.contrib.auth.models import User
 
@@ -45,6 +45,7 @@ class CommentChildrenSerializer(ModelSerializer):
 class CommentSerializer(ModelSerializer):
     replies = SerializerMethodField(required=False)
     author_name = SerializerMethodField()
+    comment_reply_notification = SerializerMethodField()
 
     class Meta:
         model = comments_table
@@ -57,9 +58,23 @@ class CommentSerializer(ModelSerializer):
             'parent_comment',
             'comment',
             'timestamp',
-            'replies'
+            'replies',
+            'comment_reply_notification'
         ]
         # read_only_fields = ('replies',)
+
+    def get_comment_reply_notification(self, obj):
+        if (notification_table.objects.filter(notification_for=3, type_id=obj.id).exists()):
+            notification = notification_table.objects.get(
+                notification_for=3, type_id=obj.id)
+            serializer = NotificationSerializer(
+                instance=notification)
+            return serializer.data
+
+        return {
+            "id": 0,
+            "count": 0
+        }
 
     def get_author_name(self, obj):
         return str(obj.author.username)
@@ -125,6 +140,8 @@ class TimelineSerializer(ModelSerializer):
     option_opted_by_current_user = SerializerMethodField()
     post_type = SerializerMethodField()
     comments = SerializerMethodField()
+    post_vote_notification = SerializerMethodField()
+    post_comment_notification = SerializerMethodField()
 
     class Meta:
         model = poll_table
@@ -138,10 +155,38 @@ class TimelineSerializer(ModelSerializer):
             'created_at',
             'options',
             'option_opted_by_current_user',
-            'comments'
+            'comments',
+            'post_vote_notification',
+            'post_comment_notification'
 
         ]
         read_only_fields = ('id', 'author_name', 'created_at')
+
+    def get_post_comment_notification(self, obj):
+        if (notification_table.objects.filter(notification_for=4, type_id=obj.id).exists()):
+            notification = notification_table.objects.get(
+                notification_for=4, type_id=obj.id)
+            serializer = NotificationSerializer(
+                instance=notification)
+            return serializer.data
+
+        return {
+            "id": 0,
+            "count": 0
+        }
+
+    def get_post_vote_notification(self, obj):
+        if (notification_table.objects.filter(notification_for=1, type_id=obj.id).exists()):
+            notification = notification_table.objects.get(
+                notification_for=1, type_id=obj.id)
+            serializer = NotificationSerializer(
+                instance=notification)
+            return serializer.data
+
+        return {
+            "id": 0,
+            "count": 0
+        }
 
     def get_post_type(self, obj):
         return 1
@@ -179,6 +224,7 @@ class SharedPostSerializer(ModelSerializer):
     author_id = SerializerMethodField()
     post_type = SerializerMethodField()
     comments = SerializerMethodField()
+    post_comment_notification = SerializerMethodField()
 
     class Meta:
         model = shared_post_table
@@ -192,9 +238,24 @@ class SharedPostSerializer(ModelSerializer):
             'caption',
             'timestamp',
             'original_post',
-            'comments'
+            'comments',
+            'post_comment_notification'
 
         ]
+
+    def get_post_comment_notification(self, obj):
+
+        if (notification_table.objects.filter(notification_for=2, type_id=obj.id).exists()):
+            notification = notification_table.objects.get(
+                notification_for=2, type_id=obj.id)
+            serializer = NotificationSerializer(
+                instance=notification)
+            return serializer.data
+
+        return {
+            "id": 0,
+            "count": 0
+        }
 
     def get_post_type(self, obj):
         return 2
@@ -244,3 +305,27 @@ class reportSerializer(ModelSerializer):
             'solved',
             'reported_user'
         ]
+
+
+class NotificationSerializer(ModelSerializer):
+    class Meta:
+        model = notification_table
+        fields = [
+            'id',
+            'notification_for',
+            'user',
+            'type_id',
+            'count',
+            'notification',
+            'timestamp'
+        ]
+
+    def create(self, validated_data):
+        return notification_table.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.count = validated_data.get('count', instance.count)
+        instance.notification = validated_data.get(
+            'notification', instance.notification)
+        instance.save()
+        return instance

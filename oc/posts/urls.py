@@ -11,7 +11,9 @@ from .api import (
     getFollowingUsersViewset,
     SharedPollViewset,
     reportViewset,
-    SharedPollForReportViewset
+    SharedPollForReportViewset,
+    NotificationViewset,
+    MyNotificationViewset
 )
 
 router = routers.DefaultRouter()
@@ -29,5 +31,7 @@ router.register('api/sharedpoll', SharedPollViewset, 'sharedpoll')
 router.register('api/report', reportViewset, 'report')
 router.register('api/reportsharedpoll',
                 SharedPollForReportViewset, 'reportsharedpoll')
+router.register('api/notification', NotificationViewset, 'notification')
+router.register('api/mynotification', MyNotificationViewset, 'mynotification')
 
 urlpatterns = router.urls

@@ -4,13 +4,15 @@ import MainComment from "./MainComment";
 
 export class Comment extends Component {
   state = {
-    value_of_id: "comment_id"
+    value_of_id: "comment_id",
+    total_comment_count: 0
   };
 
   componentDidMount() {
     let value_of_id =
-      "comment" + this.props.post.id + this.props.post.post_type;
-    this.setState({ value_of_id });
+        "comment" + this.props.post.id + this.props.post.post_type,
+      total_comment_count = this.props.post.comments.length;
+    this.setState({ value_of_id, total_comment_count });
   }
 
   render() {
@@ -46,7 +48,10 @@ export class Comment extends Component {
                   ))}
                 </ul>
                 <div className="panel-footer">
-                  <CommentForm {...this.props} />
+                  <CommentForm
+                    {...this.props}
+                    total_comment_count={this.state.total_comment_count}
+                  />
                 </div>
               </div>
             </div>

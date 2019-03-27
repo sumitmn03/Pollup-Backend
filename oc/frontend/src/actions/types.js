@@ -25,3 +25,6 @@ export const SHAREDPOLL = "SHAREDPOLL";
 export const AddSharePoll = "AddSharePoll";
 export const POSTTOBEUPDATED = "POSTTOBEUPDATED";
 export const POSTREPORTED = "POSTREPORTED";
+export const STATSPOST = "STATSPOST";
+export const GET_NOTIFICATIONS = "GET_NOTIFICATIONS";
+export const NOTIFY = "NOTIFY";

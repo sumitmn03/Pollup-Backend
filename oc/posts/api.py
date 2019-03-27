@@ -21,7 +21,9 @@ from .serializers import (
     followSerializer,
     SharedPostSerializer,
     reportSerializer,
-    sharedPollSerializerForHandlingReport)
+    sharedPollSerializerForHandlingReport,
+    NotificationSerializer
+)
 
 from .models import (poll_table,
                      option_table,
@@ -29,7 +31,9 @@ from .models import (poll_table,
                      opted_by_table,
                      follow_table,
                      shared_post_table,
-                     report_table)
+                     report_table,
+                     notification_table
+                     )
 
 from django.contrib.auth.models import User
 
@@ -232,11 +236,31 @@ class reportViewset(ModelViewSet):
 class SharedPollForReportViewset(ModelViewSet):
     serializer_class = sharedPollSerializerForHandlingReport
 
-    # queryset = poll_table.objects.all()
-
     permission_classes = [
         permissions.IsAuthenticated
     ]
 
     def get_queryset(self):
         return shared_post_table.objects.all()
+
+
+class NotificationViewset(ModelViewSet):
+    serializer_class = NotificationSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return notification_table.objects.all().order_by("-timestamp")
+
+
+class MyNotificationViewset(ModelViewSet):
+    serializer_class = NotificationSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return notification_table.objects.filter(user=self.request.user).order_by("-timestamp")

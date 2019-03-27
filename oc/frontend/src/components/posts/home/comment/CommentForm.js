@@ -32,6 +32,32 @@ export class CommentForm extends Component {
       post_index
     );
 
+    // need to make this happen
+
+    if (this.props.comment != undefined) {
+      const { comment, current_user, total_replies_count } = this.props;
+      this.props.notify(
+        comment.comment_reply_notification.id,
+        3,
+        comment.author,
+        current_user.id,
+        comment.id,
+        total_replies_count + 1,
+        total_replies_count
+      );
+    } else {
+      const { current_user, post, total_comment_count } = this.props;
+      this.props.notify(
+        post.post_comment_notification.id,
+        4,
+        post.author_id,
+        current_user.id,
+        post.id,
+        total_comment_count + 1,
+        total_comment_count
+      );
+    }
+
     this.setState({ comment_content: "" });
   };
 

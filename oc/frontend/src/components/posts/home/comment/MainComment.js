@@ -4,13 +4,17 @@ import CommentForm from "./CommentForm";
 
 export class MainComment extends Component {
   state = {
-    value_of_id: "comment_reply_id"
+    value_of_id: "comment_reply_id",
+    total_replies_count: 0
   };
 
   componentDidMount() {
-    let value_of_id = "commentreply" + this.props.comment.id;
-    this.setState({ value_of_id });
+    let value_of_id = "commentreply" + this.props.comment.id,
+      total_replies_count = this.props.comment.replies.length;
+    this.setState({ value_of_id, total_replies_count });
   }
+
+  handle_reply_notification = () => {};
 
   render() {
     return (
@@ -49,7 +53,10 @@ export class MainComment extends Component {
                   ))}
                 </ul>
                 <div className="panel-footer">
-                  <CommentForm {...this.props} />
+                  <CommentForm
+                    {...this.props}
+                    total_replies_count={this.state.total_replies_count}
+                  />
                 </div>
               </div>
             </div>
