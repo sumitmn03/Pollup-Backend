@@ -9,9 +9,7 @@ from .api import (
     GetUsersViewset,
     followViewset,
     getFollowingUsersViewset,
-    SharedPollViewset,
     reportViewset,
-    SharedPollForReportViewset,
     NotificationViewset,
     MyNotificationViewset
 )
@@ -27,10 +25,7 @@ router.register('api/getusers', GetUsersViewset, 'getusers')
 router.register('api/follow', followViewset, 'follow')
 router.register('api/following',
                 getFollowingUsersViewset, 'following')
-router.register('api/sharedpoll', SharedPollViewset, 'sharedpoll')
 router.register('api/report', reportViewset, 'report')
-router.register('api/reportsharedpoll',
-                SharedPollForReportViewset, 'reportsharedpoll')
 router.register('api/notification', NotificationViewset, 'notification')
 router.register('api/mynotification', MyNotificationViewset, 'mynotification')
 

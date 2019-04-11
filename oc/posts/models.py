@@ -1,5 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 # Create your models here.
 
@@ -73,20 +76,6 @@ class follow_table(models.Model):
 
     def __str__(self):
         return (str(self.following) if self.following else "null")
-
-
-class shared_post_table(models.Model):
-    # the user shared the post
-    shared_by = models.ForeignKey(
-        User, related_name="shared_post", on_delete=models.CASCADE)
-    caption = models.CharField(max_length=500, blank=True, null=True)
-    # the post being shared
-    shared_post = models.ForeignKey(
-        poll_table, related_name="shared_by", on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return (str(self.shared_post) if self.shared_post else "null")
 
 
 class report_table(models.Model):

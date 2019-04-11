@@ -1,3 +1,46 @@
 .nounderline {
   text-decoration: none !important;
 }
+
+.ms-form {
+  text-align: center !important;
+}
+
+.form-header {
+  width: 100% !important;
+  height: 55px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+
+  text-align: center !important;
+  font-size: 30px !important;
+  color: #6c757d;
+}
+
+.ms-form-input {
+  width: 60% !important;
+  height: 45px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  border-bottom: 1px solid #6c757d !important;
+
+  text-align: center !important;
+  font-size: 20px !important;
+  color: #6c757d;
+}
+
+.ms-form-button {
+  width: 60% !important;
+  height: 45px !important;
+
+  color: white !important;
+  text-align: center !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  background-color: #00802b !important;
+
+  border: 1px solid black !important;
+  border-radius: 5px !important;
+}

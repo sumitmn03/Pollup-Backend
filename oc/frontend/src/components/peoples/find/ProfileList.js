@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { follow } from "../../../actions/users";
+// import { follow } from "../../../actions/users";
 
 export class ProfileList extends Component {
   render() {
@@ -23,17 +23,19 @@ export class ProfileList extends Component {
     const follow_button =
       this.props.current_user.id != host_user.id ? (
         // follow or unfollow button
-
-        <button
-          onClick={() => {
-            follow_or_following_value == "follow"
-              ? this.props.follow(host_user.id)
-              : this.props.unfollow(following_id, following_index);
-          }}
-          className="btn btn-success float-right"
-        >
-          {follow_or_following_value}
-        </button>
+        <Fragment>
+          <div>{host_user.first_name}</div>
+          <button
+            onClick={() => {
+              follow_or_following_value == "follow"
+                ? this.props.follow(host_user.id)
+                : this.props.unfollow(following_id, following_index);
+            }}
+            className="btn btn-success float-right"
+          >
+            {follow_or_following_value}
+          </button>
+        </Fragment>
       ) : (
         <Fragment />
       );

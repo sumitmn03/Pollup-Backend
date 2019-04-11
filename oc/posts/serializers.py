@@ -6,21 +6,24 @@ from rest_framework.serializers import (
 )
 
 from .models import (poll_table, option_table,
-                     opted_by_table, comments_table, follow_table, shared_post_table, report_table, notification_table)
+                     opted_by_table, comments_table, follow_table, report_table, notification_table)
 
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate
 
 import json
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'first_name', 'email')
 
-        read_only_fields = ('id', 'username', 'email')
+        read_only_fields = ('id', 'first_name', 'email')
 
 
 class CommentChildrenSerializer(ModelSerializer):
@@ -39,7 +42,7 @@ class CommentChildrenSerializer(ModelSerializer):
         ]
 
     def get_author_name(self, obj):
-        return str(obj.author.username)
+        return str(obj.author.first_name)
 
 
 class CommentSerializer(ModelSerializer):
@@ -77,7 +80,7 @@ class CommentSerializer(ModelSerializer):
         }
 
     def get_author_name(self, obj):
-        return str(obj.author.username)
+        return str(obj.author.first_name)
 
     def get_replies(self, obj):
         if obj.is_parent:
@@ -197,7 +200,7 @@ class TimelineSerializer(ModelSerializer):
     #     return serializer.data
 
     def get_author_name(self, obj):
-        return str(obj.author.username)
+        return str(obj.author.first_name)
 
     def get_author_id(self, obj):
         return str(obj.author.id)
@@ -216,82 +219,6 @@ class TimelineSerializer(ModelSerializer):
             posts=obj.id, post_type=1, parent_comment_id=None)
         serializer = CommentSerializer(instance=comment, many=True)
         return serializer.data
-
-
-class SharedPostSerializer(ModelSerializer):
-    original_post = SerializerMethodField()
-    author_name = SerializerMethodField()
-    author_id = SerializerMethodField()
-    post_type = SerializerMethodField()
-    comments = SerializerMethodField()
-    post_comment_notification = SerializerMethodField()
-
-    class Meta:
-        model = shared_post_table
-        fields = [
-            'post_type',
-            'id',
-            'shared_by',
-            'author_name',
-            'author_id',
-            'shared_post',
-            'caption',
-            'timestamp',
-            'original_post',
-            'comments',
-            'post_comment_notification'
-
-        ]
-
-    def get_post_comment_notification(self, obj):
-
-        if (notification_table.objects.filter(notification_for=2, type_id=obj.id).exists()):
-            notification = notification_table.objects.get(
-                notification_for=2, type_id=obj.id)
-            serializer = NotificationSerializer(
-                instance=notification)
-            return serializer.data
-
-        return {
-            "id": 0,
-            "count": 0
-        }
-
-    def get_post_type(self, obj):
-        return 2
-
-    def get_original_post(self, obj):
-        user = self.context["user"]
-        serializer = UserSerializer(instance=user)
-        user_data = serializer.data
-
-        op = obj.shared_post
-        serializer1 = TimelineSerializer(
-            instance=op, context={'user': user_data})
-
-        return serializer1.data
-
-    def get_author_name(self, obj):
-        return str(obj.shared_by.username)
-
-    def get_author_id(self, obj):
-        return str(obj.shared_by.id)
-
-    def get_comments(self, obj):
-        comment = comments_table.objects.filter(
-            posts=obj.id, post_type=2, parent_comment_id=None)
-        serializer = CommentSerializer(instance=comment, many=True)
-        return serializer.data
-
-
-class sharedPollSerializerForHandlingReport(ModelSerializer):
-    class Meta:
-        model = shared_post_table
-        fields = [
-            'shared_by',
-            'caption',
-            'shared_post',
-            'timestamp']
 
 
 class reportSerializer(ModelSerializer):

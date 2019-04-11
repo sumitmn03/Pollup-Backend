@@ -10,15 +10,23 @@ import NotificationButton from "../notification/NotificationButton";
 
 export class Header extends Component {
   static propTypes = {
+    current_user: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     logout: PropTypes.func.isRequired,
     get_notifications: PropTypes.func.isRequired
   };
+
   render() {
-    const { isAuthenticated, user } = this.props.auth;
+    const { isAuthenticated } = this.props.auth;
+    const { current_user } = this.props;
 
     const authLinks = (
       <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li className="nav-item">
+          <Link to="/myprofile" className="nav-link">
+            Profile
+          </Link>
+        </li>
         <li className="nav-item">
           <Link to="/" className="nav-link">
             Home
@@ -33,6 +41,11 @@ export class Header extends Component {
         <li className="nav-item">
           <Link to="/post" className="nav-link">
             Post
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/setting" className="nav-link">
+            Setting
           </Link>
         </li>
         <li className="nav-item">
@@ -75,11 +88,20 @@ export class Header extends Component {
           >
             <span className="navbar-toggler-icon" />
           </button>
-          <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-            <a className="navbar-brand" href="#">
-              <strong>{user ? `Welcome ${user.username}` : ""}</strong>
-            </a>
-          </div>
+          {isAuthenticated ? (
+            <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+              <a className="navbar-brand" href="#">
+                <strong>Welcome {current_user.first_name}</strong>
+              </a>
+            </div>
+          ) : (
+            <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+              <a className="navbar-brand" href="#">
+                <strong />
+              </a>
+            </div>
+          )}
+
           {isAuthenticated ? authLinks : guestLinks}
         </div>
       </nav>
@@ -88,6 +110,7 @@ export class Header extends Component {
 }
 
 const mapStateToProps = state => ({
+  current_user: state.current_user.current_user,
   auth: state.auth
 });
 

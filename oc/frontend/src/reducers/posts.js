@@ -4,7 +4,6 @@ import {
   DECREMENT_OPTION_COUNT,
   ADD_COMMENT,
   ADD_REPLY,
-  AddSharePoll,
   POSTREPORTED
 } from "../actions/types";
 
@@ -24,11 +23,6 @@ export default function posts(state = initialState, action) {
     //     ...state,
     //     posts: [...state.posts, action.payload]
     //   };
-    case AddSharePoll:
-      return {
-        ...state,
-        posts: [...state.posts, action.payload]
-      };
     case DECREMENT_OPTION_COUNT:
       let {
           decrement_option_result,

@@ -27,6 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'uppoll58@gmail.com'
+EMAIL_HOST_PASSWORD = 'pullop@321'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 
 # Application definition
 
@@ -45,8 +51,12 @@ INSTALLED_APPS = [
     # own apps
     'posts',
     'frontend',
-    'accounts'
+    'accounts',
+    'registration'
 ]
+
+# changes the built-in user model to ours
+AUTH_USER_MODEL = 'accounts.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)

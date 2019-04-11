@@ -25,6 +25,8 @@ export class Alerts extends Component {
       if (message.msg.addPost) alert.success(message.msg.addPost);
       if (message.msg.addOptions) alert.success(message.msg.addOptions);
       if (message.msg.addComment) alert.success(message.msg.addComment);
+      if (message.msg.email_exists) alert.success(message.msg.email_exists);
+      if (message.msg.error) alert.success(message.msg.error);
     }
   }
 

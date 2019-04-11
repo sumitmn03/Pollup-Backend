@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import Comment from "./comment/Comment";
-import ShareButton from "./sharebutton/ShareButton";
 import ReportButton from "../home/reportbutton/ReportButton";
 import StateButton from "../../stats/statbutton";
 
@@ -11,7 +10,6 @@ export class PostFooter extends Component {
       footer = (
         <Fragment>
           <Comment {...this.props} />
-          <ShareButton {...this.props} />
           <ReportButton {...this.props} />
           <StateButton {...this.props} />
         </Fragment>
