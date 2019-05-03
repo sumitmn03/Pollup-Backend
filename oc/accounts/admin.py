@@ -7,7 +7,6 @@ from .forms import UserAdminCreationForm, UserAdminChangeForm
 
 from .models import (Profile)
 
-
 User = get_user_model()
 
 
@@ -23,7 +22,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('admin', 'staff', 'active')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'date_of_birth')}),
+        ('Personal info', {'fields': ('name', 'date_of_birth')}),
         ('Permissions', {'fields': ('admin', 'staff', 'active',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -34,7 +33,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2')}
          ),
     )
-    search_fields = ('email', 'first_name',)
+    search_fields = ('email', 'name',)
     ordering = ('email',)
     filter_horizontal = ()
 

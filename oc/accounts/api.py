@@ -14,6 +14,8 @@ from django.contrib.auth.hashers import check_password
 from django.core.mail import send_mail
 from django.conf import settings
 
+import datetime
+
 import random
 
 User = get_user_model()
@@ -31,8 +33,6 @@ class GetCurrentUser(generics.RetrieveAPIView):
     # serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
-        middle_name = None
-        last_name = None
         contact_no = None
         current_city = None
         hometown = None
@@ -40,19 +40,15 @@ class GetCurrentUser(generics.RetrieveAPIView):
 
         if Profile.objects.filter(user=request.user).exists():
             profile_of_cu = Profile.objects.get(user=request.user)
-            middle_name = profile_of_cu.middle_name
-            last_name = profile_of_cu.last_name
             contact_no = profile_of_cu.contact_no
             current_city = profile_of_cu.current_city
             hometown = profile_of_cu.hometown
             occupation = profile_of_cu.occupation
 
         return Response({'id': self.request.user.id,
-                         'first_name': self.request.user.first_name,
+                         'name': self.request.user.name,
                          'email': self.request.user.email,
                          'date_of_birth': self.request.user.date_of_birth,
-                         'middle_name': middle_name,
-                         'last_name': last_name,
                          'contact_no': contact_no,
                          'current_city': current_city,
                          'hometown': hometown,                         'occupation': occupation
@@ -316,7 +312,8 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": AuthToken.objects.create(user)
+            "token": AuthToken.objects.create(user, expires=datetime.timedelta(weeks=25))
         })

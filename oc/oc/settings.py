@@ -25,7 +25,7 @@ SECRET_KEY = '8p7@)qd2x9&fq1x@9@3bsu2hw=d30$vx(qumke@3$0a804kras'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'uppoll58@gmail.com'
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     # third party apps
     'rest_framework',
     'knox',
+    'corsheaders',
+    'channels',
 
     # own apps
     'posts',
@@ -63,6 +65,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -72,7 +75,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# CORS_ORIGIN_ALLOW_ALL = True
+
 ROOT_URLCONF = 'oc.urls'
+
+ASGI_APPLICATION = "oc.routing.application"
 
 TEMPLATES = [
     {
@@ -156,3 +163,32 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# CORS Config
+CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ALLOW_CREDENTIALS = False
+
+CORS_ORIGIN_WHITELIST = ('localhost:3000', 'localhost:3001')
+
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Access-Control-Allow-Origin',
+)

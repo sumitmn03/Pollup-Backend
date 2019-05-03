@@ -14,7 +14,7 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'email', 'date_of_birth')
+        fields = ('id', 'name', 'email', 'date_of_birth')
 
 
 # User Serializer to update the user table
@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserSerializerToUpdateUserTable(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'date_of_birth')
+        fields = ('id', 'name', 'date_of_birth')
 
 # user profile serializer
 
@@ -34,8 +34,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'user',
-            'middle_name',
-            'last_name',
             'contact_no',
             'current_city',
             'hometown',
@@ -48,12 +46,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'date_of_birth', 'password')
+        fields = ('id', 'email', 'name', 'date_of_birth',
+                  'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            validated_data['email'], validated_data['first_name'], validated_data['date_of_birth'], validated_data['password'])
+        user = User.objects.create_user(**validated_data)
         follow_table.objects.create(following=user, follower=user)
         return user
 
@@ -65,7 +63,6 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def validate(self, data):
-        print(data)
         user = authenticate(**data)
         # user = authenticate(**data)
         if user and user.is_active:

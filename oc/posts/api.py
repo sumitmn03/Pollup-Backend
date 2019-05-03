@@ -219,3 +219,56 @@ class MyNotificationViewset(ModelViewSet):
 
     def get_queryset(self):
         return notification_table.objects.filter(user=self.request.user).order_by("-timestamp")
+
+
+# search api to get search results
+class SearchViewset(ViewSet):
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def list(self, request, *args, **kwargs):
+        # listing out all the peoples that matches the search keyword
+        peoples = User.objects.filter(
+            name__icontains=kwargs["q"]).order_by('name')
+
+        serializer1 = UserSerializer(
+            peoples, many=True)
+
+        # listing out all the polls that matches the search keyword
+
+        polls = poll_table.objects.filter(
+            posts__icontains=kwargs["q"]).order_by('posts')
+
+        serializer2 = TimelineSerializer(
+            polls, many=True, context={'user': self.request.user})
+
+        # listing out all the polls whose option that matches the search keyword
+
+        # polls = poll_table.objects.filter(
+        #     posts__icontains=kwargs["q"]).order_by('posts')
+
+        # serializer2 = PollSerializer(
+        #     polls, many=True)
+
+        # return Response(serializer.data)
+
+        final_data = [] + serializer1.data + serializer2.data
+
+        return Response(final_data)
+
+
+class getSinglePollViewset(ModelViewSet):
+    serializer_class = TimelineSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_serializer_context(self):
+        return {'user': self.request.user}
+
+    def get_queryset(self):
+        return poll_table.objects.all()
+

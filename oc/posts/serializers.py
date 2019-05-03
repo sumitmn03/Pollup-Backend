@@ -21,9 +21,9 @@ User = get_user_model()
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'email')
+        fields = ('id', 'name', 'email')
 
-        read_only_fields = ('id', 'first_name', 'email')
+        read_only_fields = ('id', 'name', 'email')
 
 
 class CommentChildrenSerializer(ModelSerializer):
@@ -42,7 +42,7 @@ class CommentChildrenSerializer(ModelSerializer):
         ]
 
     def get_author_name(self, obj):
-        return str(obj.author.first_name)
+        return str(obj.author.name)
 
 
 class CommentSerializer(ModelSerializer):
@@ -80,7 +80,7 @@ class CommentSerializer(ModelSerializer):
         }
 
     def get_author_name(self, obj):
-        return str(obj.author.first_name)
+        return str(obj.author.name)
 
     def get_replies(self, obj):
         if obj.is_parent:
@@ -200,7 +200,7 @@ class TimelineSerializer(ModelSerializer):
     #     return serializer.data
 
     def get_author_name(self, obj):
-        return str(obj.author.first_name)
+        return str(obj.author.name)
 
     def get_author_id(self, obj):
         return str(obj.author.id)
