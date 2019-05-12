@@ -57,7 +57,7 @@ class comments_table(models.Model):
         return (str(self.comment) if self.comment else "null")
 
     def children(self):
-        return comments_table.objects.filter(parent_comment=self)
+        return comments_table.objects.filter(parent_comment=self).order_by('-timestamp')
 
     @property
     def is_parent(self):

@@ -142,7 +142,7 @@ class TimelineSerializer(ModelSerializer):
     # current_user = SerializerMethodField()
     option_opted_by_current_user = SerializerMethodField()
     post_type = SerializerMethodField()
-    comments = SerializerMethodField()
+    # comments = SerializerMethodField()
     post_vote_notification = SerializerMethodField()
     post_comment_notification = SerializerMethodField()
 
@@ -158,7 +158,7 @@ class TimelineSerializer(ModelSerializer):
             'created_at',
             'options',
             'option_opted_by_current_user',
-            'comments',
+            # 'comments',
             'post_vote_notification',
             'post_comment_notification'
 
@@ -214,11 +214,11 @@ class TimelineSerializer(ModelSerializer):
         serializer = OptedBySerializer(instance=opted, many=True)
         return serializer.data
 
-    def get_comments(self, obj):
-        comment = comments_table.objects.filter(
-            posts=obj.id, post_type=1, parent_comment_id=None)
-        serializer = CommentSerializer(instance=comment, many=True)
-        return serializer.data
+    # def get_comments(self, obj):
+    #     comment = comments_table.objects.filter(
+    #         posts=obj.id, post_type=1, parent_comment_id=None).order_by('-timestamp')
+    #     serializer = CommentSerializer(instance=comment, many=True)
+    #     return serializer.data
 
 
 class reportSerializer(ModelSerializer):

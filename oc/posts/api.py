@@ -35,6 +35,79 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class GetCommentsForDetailedPost(ViewSet):
+
+    def list(self, request, *args, **kwargs):
+        # pagination
+        # getting the page number and limit the polls to 30
+        post_id = kwargs["post"]
+        page = kwargs["page"]
+        limit = page + 4
+        has_more = True
+
+        all_comments_of_the_post = comments_table.objects.filter(
+            posts=post_id, post_type=1, parent_comment_id=None).order_by('-timestamp')
+
+        total_number_of_comments = all_comments_of_the_post.count()
+
+        if page > total_number_of_comments or limit > total_number_of_comments:
+            has_more = False
+
+        comments = all_comments_of_the_post[page:limit]
+
+        serializer = CommentSerializer(
+            comments, many=True)
+        print(has_more)
+
+        return Response({
+            "comments": serializer.data,
+            "page": limit,
+            "has_more": has_more
+        })
+
+
+class TimelineViewset(ViewSet):
+
+    def list(self, request, *args, **kwargs):
+        # pagination
+        # getting the page number and limit the polls to 30
+        page = kwargs["page"]
+        limit = page + 3
+        has_more = True
+
+        # listing out the users whom the current user following
+        following = follow_table.objects.values_list('following').filter(
+            follower=self.request.user.id)
+
+        # listing out the polls that are reported by the user
+
+        reported_polls = report_table.objects.values_list(
+            'post_id').filter(post_type=1)
+
+        # listing out all the post of the following user
+
+        all_posts = poll_table.objects.all()
+
+        total_number_of_posts = all_posts.count()
+
+        if page > total_number_of_posts or limit > total_number_of_posts:
+            has_more = False
+
+        posts = all_posts.filter(
+            author__in=following).exclude(id__in=reported_polls).order_by('-created_at')[page:limit]
+
+        serializer1 = TimelineSerializer(
+            posts, many=True, context={'user': self.request.user})
+
+        final_data = [] + serializer1.data
+
+        return Response({
+            "polls": final_data,
+            "page": limit,
+            "has_more": has_more
+        })
+
+
 class OptedByViewset(ModelViewSet):
     serializer_class = OptedBySerializer
 
@@ -97,26 +170,6 @@ class PostViewset(ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-# class TimelinePost(ModelViewSet):
-#     serializer_class = TimelineSerializer
-
-#     def get_serializer_context(self):
-#         return {"user": self.request.user}
-
-#     permission_classes = [
-#         permissions.IsAuthenticated
-#     ]
-
-#     def get_queryset(self):
-
-#         following = follow_table.objects.values_list('following').filter(
-#             follower=self.request.user.id)
-#         posts = poll_table.objects.filter(
-#             author__in=following).order_by('-created_at')
-
-#         return posts
-
-
 class GetUsersViewset(ModelViewSet):
     serializer_class = UserSerializer
 
@@ -161,31 +214,6 @@ class getFollowingUsersViewset(ModelViewSet):
         # *********************** test ***********************
         # *********************** test ***********************
         # *********************** test ***********************
-
-
-class TimelineViewset(ViewSet):
-
-    def list(self, request):
-        # listing out the users whom the current user following
-        following = follow_table.objects.values_list('following').filter(
-            follower=self.request.user.id)
-
-        # listing out the polls that are reported by the user
-
-        reported_polls = report_table.objects.values_list(
-            'post_id').filter(post_type=1)
-
-        # listing out all the post of the following user
-        posts = poll_table.objects.filter(
-            author__in=following).exclude(id__in=reported_polls).order_by('-created_at')
-
-        serializer1 = TimelineSerializer(
-            posts, many=True, context={'user': self.request.user})
-
-        final_data = [] + serializer1.data
-
-        # return Response(serializer.data)
-        return Response(final_data)
 
 
 class reportViewset(ModelViewSet):
@@ -271,4 +299,3 @@ class getSinglePollViewset(ModelViewSet):
 
     def get_queryset(self):
         return poll_table.objects.all()
-

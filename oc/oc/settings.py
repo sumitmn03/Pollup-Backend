@@ -79,8 +79,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'oc.urls'
 
-ASGI_APPLICATION = "oc.routing.application"
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -192,3 +190,13 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
     'Access-Control-Allow-Origin',
 )
+
+ASGI_APPLICATION = 'oc.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}

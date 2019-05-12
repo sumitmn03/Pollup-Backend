@@ -13,7 +13,8 @@ from .api import (
     NotificationViewset,
     MyNotificationViewset,
     SearchViewset,
-    getSinglePollViewset
+    getSinglePollViewset,
+    GetCommentsForDetailedPost
 )
 
 from . import api
@@ -22,7 +23,7 @@ router = routers.DefaultRouter()
 
 router.register('api/posts', PostViewset, 'posts')
 router.register('api/options', OptionViewset, 'options')
-router.register('api/gettimeline', TimelineViewset, 'timeline')
+# router.register('api/gettimeline', TimelineViewset, 'timeline')
 router.register('api/comments', CommentViewset, 'comment')
 router.register('api/optedby', OptedByViewset, 'optedby')
 router.register('api/getallusers', GetUsersViewset, 'getusers')
@@ -40,6 +41,10 @@ router.register('api/getallpolls',
 urlpatterns = [
     path('api/search/<str:q>/',
          SearchViewset.as_view({'get': 'list'}), name='search'),
+    path('api/gettimeline/<int:page>/',
+         TimelineViewset.as_view({'get': 'list'}), name='timeline'),
+    path('api/getcomments/<int:post>/<int:page>/',
+         GetCommentsForDetailedPost.as_view({'get': 'list'}), name='comments'),
     # path('api/getallpolls',
     #      getSinglePollViewset.as_view({'get': 'list'}), name='getpolls')
 ]
