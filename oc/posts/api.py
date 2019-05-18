@@ -19,7 +19,14 @@ from .serializers import (
     UserSerializer,
     followSerializer,
     reportSerializer,
-    NotificationSerializer
+    NotificationSerializer,
+    CommentChildrenSerializer
+)
+
+from .pagination import (
+    TimelinePagination,
+    CommentsPagination,
+    CommentsReplyPagination
 )
 
 from .models import (poll_table,
@@ -34,48 +41,98 @@ from .models import (poll_table,
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-
-class GetCommentsForDetailedPost(ViewSet):
-
-    def list(self, request, *args, **kwargs):
-        # pagination
-        # getting the page number and limit the polls to 30
-        post_id = kwargs["post"]
-        page = kwargs["page"]
-        limit = page + 4
-        has_more = True
-
-        all_comments_of_the_post = comments_table.objects.filter(
-            posts=post_id, post_type=1, parent_comment_id=None).order_by('-timestamp')
-
-        total_number_of_comments = all_comments_of_the_post.count()
-
-        if page > total_number_of_comments or limit > total_number_of_comments:
-            has_more = False
-
-        comments = all_comments_of_the_post[page:limit]
-
-        serializer = CommentSerializer(
-            comments, many=True)
-        print(has_more)
-
-        return Response({
-            "comments": serializer.data,
-            "page": limit,
-            "has_more": has_more
-        })
+from django.db.models import DateField, Case, When
 
 
-class TimelineViewset(ViewSet):
+class ProfilePollViewset(ModelViewSet):
+    serializer_class = TimelineSerializer
 
-    def list(self, request, *args, **kwargs):
-        # pagination
-        # getting the page number and limit the polls to 30
-        page = kwargs["page"]
-        limit = page + 3
-        has_more = True
+    pagination_class = TimelinePagination
 
-        # listing out the users whom the current user following
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_serializer_context(self):
+        return {'user': self.request.user}
+
+    def get_queryset(self):
+        # listing out the polls that are reported by the user
+
+        reported_polls = report_table.objects.values_list(
+            'post_id').filter(post_type=1)
+        
+        # listing out all the post of the following user
+# author__in=following
+        return poll_table.objects.filter(author=self.kwargs['author']).exclude(id__in=reported_polls).order_by('-created_at')
+
+class VoteViewset(ModelViewSet):
+    serializer_class = TimelineSerializer
+
+    pagination_class = TimelinePagination
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_serializer_context(self):
+        return {'user': self.request.user}
+
+    def get_queryset(self):
+        # listing out the polls that are reported by the user
+
+        reported_polls = report_table.objects.values_list(
+            'post_id').filter(post_type=1)
+
+        # listing out the polls VOTED by the user
+
+        polls_voted_by_user = opted_by_table.objects.values_list(
+            'posts').filter(user=self.request.user)
+
+        # listing out all the post of the following user
+# author__in=following
+        return poll_table.objects.exclude(id__in=(reported_polls or polls_voted_by_user)).order_by('-created_at')
+
+class CommentReplyViewset(ModelViewSet):
+    serializer_class = CommentChildrenSerializer
+
+    pagination_class = CommentsReplyPagination
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return comments_table.objects.filter(parent_comment_id=self.kwargs['parent']).order_by('-timestamp')
+
+
+class CommentViewset(ModelViewSet):
+    serializer_class = CommentSerializer
+
+    pagination_class = CommentsPagination
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return comments_table.objects.filter(
+            posts=self.kwargs['post'], post_type=1, parent_comment_id=None).order_by('-timestamp')
+
+
+class TimelineViewset(ModelViewSet):
+    serializer_class = TimelineSerializer
+
+    pagination_class = TimelinePagination
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_serializer_context(self):
+        return {'user': self.request.user}
+
+    def get_queryset(self):
         following = follow_table.objects.values_list('following').filter(
             follower=self.request.user.id)
 
@@ -85,27 +142,13 @@ class TimelineViewset(ViewSet):
             'post_id').filter(post_type=1)
 
         # listing out all the post of the following user
-
-        all_posts = poll_table.objects.all()
-
-        total_number_of_posts = all_posts.count()
-
-        if page > total_number_of_posts or limit > total_number_of_posts:
-            has_more = False
-
-        posts = all_posts.filter(
-            author__in=following).exclude(id__in=reported_polls).order_by('-created_at')[page:limit]
-
-        serializer1 = TimelineSerializer(
-            posts, many=True, context={'user': self.request.user})
-
-        final_data = [] + serializer1.data
-
-        return Response({
-            "polls": final_data,
-            "page": limit,
-            "has_more": has_more
-        })
+# author__in=following
+        return poll_table.objects.exclude(id__in=reported_polls).annotate(
+            author_or_not=Case(
+                When(author__in=following, then='created_at'),
+                default=None
+            )
+        ).order_by('-author_or_not', '-created_at')
 
 
 class OptedByViewset(ModelViewSet):
@@ -124,17 +167,6 @@ class OptedByViewset(ModelViewSet):
     # def get_object(self):
     #     id = self.kwargs['id']
     #     return User.objects.get(id=id)
-
-
-class CommentViewset(ModelViewSet):
-    serializer_class = CommentSerializer
-
-    permission_classes = [
-        permissions.IsAuthenticated
-    ]
-
-    def get_queryset(self):
-        return comments_table.objects.filter(parent_comment_id=None)
 
 
 class OptionViewset(ModelViewSet):
@@ -167,7 +199,9 @@ class PostViewset(ModelViewSet):
         return poll_table.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        new_post = serializer.save(author=self.request.user)
+        notification_table.objects.create(notification_for=1, user=self.request.user, type_id=new_post.id)
+        return new_post
 
 
 class GetUsersViewset(ModelViewSet):
@@ -246,7 +280,7 @@ class MyNotificationViewset(ModelViewSet):
     ]
 
     def get_queryset(self):
-        return notification_table.objects.filter(user=self.request.user).order_by("-timestamp")
+        return notification_table.objects.filter(user=self.request.user).exclude(count=0).order_by("-timestamp")
 
 
 # search api to get search results

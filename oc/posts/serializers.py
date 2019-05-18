@@ -8,6 +8,8 @@ from rest_framework.serializers import (
 from .models import (poll_table, option_table,
                      opted_by_table, comments_table, follow_table, report_table, notification_table)
 
+from accounts.models import (Profile)
+
 # from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate
@@ -18,12 +20,21 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class UserProfileSerializer(ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('id', 'contact_no', 'current_city', 'hometown', 'occupation')
+
+        read_only_fields = ('id', 'contact_no',
+                            'current_city', 'hometown', 'occupation')
+
+
 class UserSerializer(ModelSerializer):
+    profile = UserProfileSerializer()
+
     class Meta:
         model = User
-        fields = ('id', 'name', 'email')
-
-        read_only_fields = ('id', 'name', 'email')
+        fields = ('id', 'name', 'email', 'date_of_birth', 'profile')
 
 
 class CommentChildrenSerializer(ModelSerializer):
@@ -180,8 +191,8 @@ class TimelineSerializer(ModelSerializer):
 
     def get_post_vote_notification(self, obj):
         if (notification_table.objects.filter(notification_for=1, type_id=obj.id).exists()):
-            notification = notification_table.objects.get(
-                notification_for=1, type_id=obj.id)
+            notification = notification_table.objects.filter(
+                notification_for=1, type_id=obj.id)[0]
             serializer = NotificationSerializer(
                 instance=notification)
             return serializer.data
