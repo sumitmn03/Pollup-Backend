@@ -139,11 +139,12 @@ class PollSerializer(ModelSerializer):
             'posts',
             'author',
             'no_of_options',
-            'created_at'
+            'created_at',
+            'expiry_date'
         ]
 
-    # def create(self, validated_data):
-    #     return poll_table.objects.create(**validated_data)
+    def create(self, validated_data):
+        return poll_table.objects.create(**validated_data)
 
 
 class TimelineSerializer(ModelSerializer):
@@ -167,6 +168,7 @@ class TimelineSerializer(ModelSerializer):
             'author_name',
             'author_id',
             'created_at',
+            'expiry_date',
             'options',
             'option_opted_by_current_user',
             # 'comments',
@@ -174,7 +176,7 @@ class TimelineSerializer(ModelSerializer):
             'post_comment_notification'
 
         ]
-        read_only_fields = ('id', 'author_name', 'created_at')
+        read_only_fields = ('id', 'author_name', 'created_at', 'expiry_date')
 
     def get_post_comment_notification(self, obj):
         if (notification_table.objects.filter(notification_for=4, type_id=obj.id).exists()):

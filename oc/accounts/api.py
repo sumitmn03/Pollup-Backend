@@ -33,26 +33,30 @@ class GetCurrentUser(generics.RetrieveAPIView):
     # serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
-        contact_no = None
-        current_city = None
-        hometown = None
-        occupation = None
+        if not request.user.is_anonymous:
+            contact_no = None
+            current_city = None
+            hometown = None
+            occupation = None
 
-        if Profile.objects.filter(user=request.user).exists():
-            profile_of_cu = Profile.objects.get(user=request.user)
-            contact_no = profile_of_cu.contact_no
-            current_city = profile_of_cu.current_city
-            hometown = profile_of_cu.hometown
-            occupation = profile_of_cu.occupation
+            if Profile.objects.filter(user=request.user).exists():
+                profile_of_cu = Profile.objects.get(user=request.user)
+                contact_no = profile_of_cu.contact_no
+                current_city = profile_of_cu.current_city
+                hometown = profile_of_cu.hometown
+                occupation = profile_of_cu.occupation
 
-        return Response({'id': self.request.user.id,
-                         'name': self.request.user.name,
-                         'email': self.request.user.email,
-                         'date_of_birth': self.request.user.date_of_birth,
-                         'contact_no': contact_no,
-                         'current_city': current_city,
-                         'hometown': hometown,                         'occupation': occupation
-                         })
+            return Response({'id': self.request.user.id,
+                             'name': self.request.user.name,
+                             'email': self.request.user.email,
+                             'date_of_birth': self.request.user.date_of_birth,
+                             'contact_no': contact_no,
+                             'current_city': current_city,
+                             'hometown': hometown,                         'occupation': occupation
+                             })
+        else:
+            return Response({'isNotAuthenticated': True})
+
 
 # update user's email
 
